@@ -1,11 +1,14 @@
-# Scrape to CSV: Scrape the Web, Make a CSV...
+# Dinosaur Automator
 
-Lorem main description.
+A class to automate the Google Chrome Dinosaur Game. Completed for Professional Portfolio
+Project: Assignment 13: Angela Yu 100 Days of Code -- "GUI Automation: Automate the
+Google Dinosaur Game"
 
 - [Python](https://www.python.org/)
 
-Completed for Professional Portfolio Project: Assignment 12, Angela Yu 100 Days of
-Code -- "Web Scraping: Custom Web Scraper"
+- [PIL](https://pillow.readthedocs.io/en/stable/)
+
+- [PyAutoGUI](https://github.com/asweigart/pyautogui)
 
 _MIT License: Copyright (c) 2024- Andrew Blais_
 
@@ -13,87 +16,103 @@ _MIT License: Copyright (c) 2024- Andrew Blais_
 
 Future updates will include:
 
-- Some countries' data cannot be processed into .csv and .json files. Check into the
-  pre-/post-dataframe contents.
+- Include functionality to allow for browser already being open and game running.
 
-- Consider more global Selenium and BeautifulSoup functionality to allow for use on
-  any websites.
+- Consider closer analysis of game motion/acceleration and improvement thereby to
+  algorithm controlling automations handling of acceleration. Include options for user
+  to chose between different algorithms.
+
+- Allow user to pass their screen resolution in kwargs and set dim_x and dim_y
+  accordingly. Ensure all ints dependent on/related to screen resolution are not hard-
+  coded but are ratios derived from initial user resolution input.
+
+- Other things too...
 
 ---
 
 ### Documentation:
 
 ```requirements
-beautifulsoup4==4.12.3
-pandas==2.2.1
-selenium==4.19.0
-tabulate==0.9.0
-webdriver-manager==4.0.1
 ```
 
 _Docstrings for `main.py`:_
 
 ```bash
-Help on class WorldFactbook in module __main__:
+Help on class DinosaurAutomator in module __main__:
 
-class WorldFactbook(builtins.object)
- |  WorldFactbook(country: str = '', 
- |                print_df: bool = True, 
- |                save_csv: bool = True, 
- |                save_json: bool = True, 
- |                article_class: str = 'article-content')
+class DinosaurAutomator(builtins.object)
+ |  A class to automate the Google Chrome Dinosaur Game.
  |
- |  A class to scrape and process information from the CIA World Factbook about a
- |   given country.
+ |  This automator navigates the dinosaur through obstacles by jumping, leveraging
+ |   pixel analysis to determine the timing of jumps and adjusting th gameplay
+ |   strategy based on the speed of the game, which increases over time.
  |
- |  :param country: The name of the country to scrape data for. If not specified, a
- |                   random country is selected.
- |  :type country: str
- |  :param print_df: Indicates whether to print the dataframe to the console.
- |  :type print_df: bool
- |  :param save_csv: Indicates whether to save the dataframe to a CSV file.
- |  :type save_csv: bool
- |  :param save_json: Indicates whether to save the dataframe to a JSON file.
- |  :type save_json: bool
- |  :param article_class: The class name of the article content in the HTML. Default
- |                         is "article-content".
- |  :type article_class: str
+ |   Attributes:
+ |       img_grab_init (ImageGrab): Initial screen grab to determine screen dimensions.
+ |       img_grab_init_data (PixelAccess): Pixel Access object for `img_grab_init`.
+ |       img_grab_data (PixelAccess): Current screen pixel data.
+ |       dim_x (int): Screen width.
+ |       dim_y (int): Screen height.
+ |       theme_x (int): X-coordinate determining the theme of the game (light or dark).
+ |       theme_y (int): Y-coordinate for the same.
+ |       theme_bool (bool): Flag for game theme. False for 'light', True for 'dark'.
+ |       l_min_vals (list): Minimum L values for light and dark themes, respectively.
+ |       l_max_vals (list): Maximum L values for light and dark themes, respectively.
+ |       l_min (int): Current minimum L value based on theme.
+ |       l_max (int): Current maximum L value based on theme.
+ |       obst_x_min (int): Minimum X-coordinate to start checking for obstacles.
+ |       obst_x_max_init (int): Initial maximum X-coordinate to check for obstacles.
+ |       obst_x_max (int): Adjustable maximum X-coordinate for obstacle detection.
+ |       jump_x_increment (int): Value to increase `obst_x_max` by, adapt to game speed.
+ |       jump_turns_counter (int): Counter for number of jumps, to adjust `obst_x_max`.
+ |       jump_turns_max (int): Number of jumps after which `obst_x_max` is increased.
+ |       obst_y_min (int): Minimum Y-coordinate to check for obstacles.
+ |       obst_y_max (int): Maximum Y-coordinate to check for obstacles.
+ |       did_initial_jump (bool): Flag to check if the initial jump has been made.
+ |       game_url (str): URL of the Dinosaur Game.
  |
  |  Methods defined here:
  |
- |  __init__(self, 
- |           country: str = '', 
- |           print_df: bool = True, 
- |           save_csv: bool = True, 
- |           save_json: bool = True, 
- |           article_class: str = 'article-content')
- |      Initialize self.  See help(type(self)) for accurate signature.
+ |  __init__(self)
+ |      Initializes the DinosaurAutomator with default values and starts the game
+ |       automation process.
  |
- |  country_name_select(self)
- |      Selects a country name for scraping. If no country is specified, selects a
- |       random country from the list.
+ |  game_engine(self)
+ |      The main loop of the game automation, handling initial and subsequent jumps.
  |
- |  driver_scrape(self)
- |      Orchestrates the scraping process: initializes the Selenium driver, scrapes
- |       the data, and saves it.
+ |  get_current_colors(self)
+ |      Updates the current screen pixel data and adjusts the
+ |       theme-based L values accordingly.
  |
- |  driver_selenium(self)
- |      Initializes the Selenium WebDriver, navigates to the FACTBOOK_URL, and
- |       clicks on the specified country link.
+ |  get_screen_dimensions(self)
+ |      Captures the initial screen dimensions for reference in gameplay logic.
  |
- |  make_beautiful_soup(self)
- |      Parses the HTML of the scraped page using BeautifulSoup and extracts
- |       relevant data into a dictionary.
+ |  initial_img_grab(self)
+ |      Captures an initial screenshot of the game screen, used for determining
+ |       screen dimensions and initializing pixel data.
  |
- |  make_dataframe(self)
- |      Converts the scraped data dictionary into a pandas DataFrame and optionally
- |       prints it.
+ |  initial_jump(self)
+ |      Performs the initial jump to start the game and sets the flag indicating
+ |       the game has started.
  |
- |  save_csv_file(self)
- |      Saves the DataFrame to a CSV file if the save_csv attribute is True.
+ |  locate_theme_pixel(self)
  |
- |  save_json_file(self)
- |      Saves the DataFrame to a JSON file if the save_json attribute is True.
+ |  open_dinosaur_game(self)
+ |      Opens the Google Chrome browser and navigates to the Dinosaur Game URL.
+ |
+ |  subsequent_gameplay(self)
+ |      Handles gameplay after the initial jump by detecting obstacles and
+ |      adjusting jump timing as the game speeds up.
+ |
+ |  ----------------------------------------------------------------------
+ |  Static methods defined here:
+ |
+ |  game_ignition()
+ |      Starts the Dinosaur Game by simulating a spacebar press.
+ |
+ |  standardize_gui()
+ |      Prepares the GUI by making the browser fullscreen and resetting zoom,
+ |       to ensure consistent screen dimensions and element placements.
  |
  |  ----------------------------------------------------------------------
  |  Data descriptors defined here:
@@ -105,115 +124,55 @@ class WorldFactbook(builtins.object)
  |      list of weak references to the object (if defined)
 ```
 
-_Docstrings for `/config/config.py`:_
-
-```bash
-Help on module __main__:
-
-
-config.py
-
-Contains static configurations and utility functions for the World Factbook 
- scraping project.
-
-This includes the URL for the CIA World Factbook, a function to generate filenames 
- in a consistent format, and a function to introduce random sleep intervals between 
- requests to mimic human behavior and reduce the likelihood of being detected as a bot.
-
-Help on function create_filename in module __main__:
-
-create_filename(name, extension)
-    Generates a sanitized and standardized file name using a country name and a
-     file extension.
-
-    :param name: The country name to be included in the file name.
-    :type name: str
-    :param extension: The file extension (e.g., 'csv', 'json').
-    :type extension: str
-    :return: A string containing the sanitized file name.
-    :rtype: str
-
-    The country name is sanitized by removing commas, replacing spaces with underscores,
-     and converting to lowercase to ensure file system compatibility.
-
-Help on function randsleep in module __main__:
-
-randsleep()
-    Pauses the execution for a random interval between 5 and 10 seconds.
-
-    This function is used to mimic human browsing behavior and delay the execution
-     of subsequent actions, which can help in avoiding detection by anti-bot mechanisms
-     on websites, also helps to respect the site's traffic load.
-```
-
-_Docstrings for `/data/country_names.py`:_
-
-```bash
-Help on module __main__:
-
-country_names.py
-
-Contains a list of country names used in the World Factbook scraping project. This list
- is used for selecting a country randomly if no specific country is provided for data
- scraping. Based on ISO 3166 Codes standard.
-
-The country names are stored in a list format, making it easy to retrieve a random name
- or iterate over all names for batch processing tasks. The list includes various
- territories and regions in addition to sovereign countries to encompass the wide range
- of entries found in the CIA World Factbook.
-```
-
-Project folder **_savedFiles_** contains sample CSV and JSON files created via `main.py`.
-
 ---
 
-## Created in completing an assignment for Angela Yu's Course:
+## Created in completing an assignment for Angela Yu Course:
 
-### **Day 93, Professional Portfolio Project [Web Scraping]**
+### **Day 94, Professional Portfolio Project [GUI Automation]**
 
-#### **_Assignment 12, "Custom Web Scraper"_**
+#### **_Assignment 13: "Automate the Google Dinosaur Game"_**
 
-Build a custom web scraper to collect data on things that you are interested in.
+Write Python code to play the Google Dinosaur Game.
 
 - _assignment
   for [Angela Yu 100 Days of Code](https://www.udemy.com/course/100-days-of-code/)_
 
 ### **Assignment instructions:**
 
-Using what you have learnt about web scraping, scrape a website for data that you are
-interested in. Try to build a CSV with the scraped data.
+On Chrome, when you try to access a website and your internet is down, you see a little
+dinosaur. (Apparently because dinosaurs have short arms and they "can't reach" your
+website.
 
-What you scrape is up to you.
+On this page, there is a hidden game, if you hit space bar you can play the T-rex run
+game.
 
-Here are some suggestions:
+![Project Description Image](/static/project_description.jpg)
 
-[NBA Player Stats](https://www.nba.com/stats/)
+Alternatively you can access the game directly here:
 
-[Audible Books and Ratings](https://www.audible.com/search?keywords=book&node=18573211011)
+previously: https://elgoog.im/t-rex/
+now: https://elgoog.im/dinosaur-game/
 
-[Miami House Foreclosure Listing](https://miamidade.realforeclose.com/index.cfm?zaction=AUCTION&Zmethod=PREVIEW&AUCTIONDATE=11/02/2020)
+You goal today is to write a Python script to automate the playing of this game. Your
+program will look at the pixels on the screen to determine when it needs to hit the space
+bar and play the game automatically.
 
-[Steam Games Data](https://steamdb.info/)
+You can see what it looks like when the game is automated with a bot:
 
-[Alibaba Products](https://www.alibaba.com/trade/search?fsb=y&IndexArea=product_en&CatId=&SearchText=paracord&viewtype=&tab=)
+previously: https://elgoog.im/t-rex/?bot
+now: https://elgoog.im/dinosaur-game/?bot
 
-[Registered Doctors in Idaho](https://apps-dopl.idaho.gov/IBOMPublic/LPRBrowser.aspx)
+You might want to look up these two packages:
 
-[Recipes](https://www.allrecipes.com/)
+https://pypi.org/project/Pillow/
 
-[Real Estate](https://www.trulia.com/)
-
-[Songs](https://soundcloud.com/)
-
-[Rollercoasters](https://rcdb.com/)
-
-[Food Nutrition](https://www.nutritionvalue.org/Pasta%2C_enriched%2C_dry_nutritional_value.html)
+https://pyautogui.readthedocs.io/en/latest/
 
 ---
 
 ### My Submission:
 
-My project is viewable here: https://github.com/andrewblais/scrapeToCSV
+My project is viewable here: https://github.com/andrewblais/...
 
 ---
 
@@ -223,41 +182,24 @@ My project is viewable here: https://github.com/andrewblais/scrapeToCSV
 
 **_Write down how you approached the project._**
 
-My intial step was to review previous projects and online documenation on the process of
-converting data to csv in Python. Afterwards I looked over earlier lessons and projects
-using Selenium and Beautiful Soup.
-
-I decided also to include functionality to include writing a JSON file as well as the
-CSV.
+stuff
 
 **_What was hard?_**
 
-The toughest challenge in this project was organizing the scraped data into a data
-structure (Python dictionary) which could be succesfully parsed into a Pandas dataframe.
+stuff
 
 **_What was easy?_**
 
-The most natural part of creating this project was the basic structure of the Class in
-**_main.py_**. OOP was a tough concept to learn/internalize, but with practice its
-become a lot easier to understand.
+stuff
 
 **_How might you improve for the next project?_**
 
-It might prove useful to write docstrings and descriptive comments as I write the
-code, rather than afterward.
+stuff
 
 **_What was your biggest learning from today?_**
 
-Understanding more about constructing data structures/dictionaries that fit smoothly
-into a Pandas dataframe, and how the data correlates to that in a CSV or JSON file.
+stuff
 
 **_What would you do differently if you were to tackle this project again?_**
 
-I underestimated the difficulty of this project. The workings of Selenium and
-Beautiful Soup, both implementation of the driver and parsing the html, was a bit
-more complicated than I remember. Lots of data types, navigating the HTML elements and
-initially working out the best Selenium modules to import and the most efficient way to
-make use of them.
-
-Slow down, write down and work out difficult problems on paper rather than trying to
-do them in my head or on-screen.
+stuff
